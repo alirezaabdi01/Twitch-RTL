@@ -8,7 +8,8 @@
     {
       "matches": [
         "*://www.twitch.tv/*",
-        "*://m.twitch.tv/*"
+        "*://m.twitch.tv/*",
+        "*://dashboard.twitch.tv/*"
       ],
       "run_at": "document_idle",
       "js": [
