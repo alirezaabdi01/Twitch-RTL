@@ -13,6 +13,7 @@ Twitch RTL is a browser extension designed to enhance the viewing experience on 
 - Automatically Decline Cookies
 - No Data Collect!!!! (You Can See The Codes Bro)
 
-![My Screenshot](1.png)
-![My Screenshot](2.png)
-![My Screenshot](3.png)
+![My Screenshot](GitHub_Images/Banner.png)
+![My Screenshot](GitHub_Images/1.png)
+![My Screenshot](GitHub_Images/2.png)
+![My Screenshot](GitHub_Images/3.png)
