@@ -18,6 +18,7 @@ Twitch RTL is a browser extension designed to enhance the viewing experience on 
 - 🟡 [Chrome](https://github.com/alirezaabdi01) Coming Soon..
 
 ![My Screenshot](GitHub_Images/Banner.png)
+![](GitHub_Images/Install_custom_extention.jpeg)
 ![My Screenshot](GitHub_Images/1.png)
 ![My Screenshot](GitHub_Images/2.png)
 ![My Screenshot](GitHub_Images/3.png)
