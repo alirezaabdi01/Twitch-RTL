@@ -10,6 +10,7 @@ Twitch RTL is a browser extension designed to enhance the viewing experience on 
 - Other features (100% truth no lie vallahi):
 - Auto claim drop
 - auto refresh when error #2000 occurs
+- Automatically Decline Cookies
 - No Data Collect!!!! (You Can See The Codes Bro)
 
 Email me:
