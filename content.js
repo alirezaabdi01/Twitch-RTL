@@ -1,3 +1,11 @@
+/***************************************************************************************************************************************************************
+ *                                                     COPYRIGHT (C) 2025 HTTPS://GITHUB.COM/ALIREZAABDI01                                                     *
+ *                                                                THIS SOFTWARE IS PROPRIETARY.                                                                *
+ * SOURCE CODE IS MADE AVAILABLE FOR TRANSPARENCY ONLY. YOU MAY NOT COPY, MODIFY, REDISTRIBUTE, OR CREATE DERIVATIVE WORKS WITHOUT EXPRESS WRITTEN PERMISSION. *
+ *                                                                    ALL RIGHTS RESERVED.                                                                     *
+***************************************************************************************************************************************************************/
+
+
 if (!document.head.querySelector(".TwitchRTL")) {
   const style = document.createElement("style");
   style.className = "TwitchRTL";
@@ -89,14 +97,15 @@ function handleMessages() {
   const chat = document.querySelector("div[aria-label='Chat messages']");
   if (!chat) return;
 
-  if (globalFontSelectValue != currentFont && document.querySelector('.font-select')) {
-    currentFont = globalFontSelectValue;
-    localStorage.setItem('selectedFont', currentFont);
-    if (currentFont == "Twitch")
-      document.querySelector('.font-select').style.removeProperty("font-family");
-    else
-      document.querySelector('.font-select').style.fontFamily = currentFont;
+  /***************************
+   * UPDATE TWITCH CHAT FONT *
+  ***************************/
 
+  if (globalFontSelectValue !== currentFont && (currentFont = globalFontSelectValue)) {
+
+    localStorage.setItem('selectedFont', currentFont);
+    const el = document.querySelector('.font-select');
+    el && (currentFont === "Twitch" ? el.style.removeProperty("font-family") : el.style.fontFamily = currentFont);
     const sheet = document.querySelector('.TwitchRTL')?.sheet;
     if (sheet) {
       const targets = ['.chat-room__content', '.gBAboc', '.fPmwxk'];
@@ -110,11 +119,23 @@ function handleMessages() {
     }
   }
 
+  /*********************************************
+   * REMOVE THE BUUGGED CHAT HORIZENTAL SCROLL *
+  *********************************************/
+
   const container = chat.querySelector(".simplebar-content");
   if (container) container.style.overflowX = "hidden";
 
+  /*****************************************
+   * REMOVE CHAT-WELCOME-MESSAGE ONLY TEXT *
+  *****************************************/
+
   document.querySelectorAll('[data-a-target="chat-welcome-message"]').forEach(div => div.innerHTML = "");
   document.querySelectorAll('[data-a-target="chat-welcome-message"]').forEach(div => div.innerText = "");
+
+  /**********************************************
+   * ALGORITHM OF MAKING THE CHAT RIGHT TO LEFT *
+  **********************************************/
 
   const messages = chat.querySelectorAll("div[data-a-target='chat-line-message']");
   for (let i = messages.length - 1; i >= 0; i--) {
@@ -144,13 +165,25 @@ function handleMessages() {
   }
 }
 
-function waitFor(selector, timeout = 10000) {
+function waitForOne(selectors, t = 10000) {
   return new Promise((res, rej) => {
-    const t = setInterval(() => {
-      const el = document.querySelector(selector);
-      if (el) return clearInterval(t), res(el);
+    const s = Date.now(), i = setInterval(() => {
+      for (const sel of selectors) {
+        const el = document.querySelector(sel);
+        if (el) return clearInterval(i), res({ el, sel });
+      }
+      if (Date.now() - s > t) clearInterval(i), rej();
     }, 100);
-    setTimeout(() => clearInterval(t) || rej(), timeout);
+  });
+}
+
+function waitFor(sel, t = 3000) {
+  return new Promise((res, rej) => {
+    const i = setInterval(() => {
+      const el = document.querySelector(sel);
+      if (el) return clearInterval(i), res(el);
+    }, 100);
+    setTimeout(() => clearInterval(i) || rej(), t);
   });
 }
 
@@ -168,20 +201,25 @@ observer.observe(document.body, {
 
 function handler() {
 
+  /*********************************
+   * FIX CHAT WELCOME MESSAGE SPAM *
+  *********************************/
+
   if (document.querySelectorAll('[data-a-target="chat-welcome-message"]').length > 1) {
     try {
-      // const user_chat = document.querySelector("span[data-a-target='chat-input-text']").querySelector('span').innerText;
       document.querySelector("button[data-a-target='chat-settings']").click();
-      waitFor("button[data-a-target='hide-chat-button']").then(el =>
-        el.click()
-      );
-      waitFor("button[data-a-target='show-chat-button']").then(el =>
-        el.click()
-      );
-      // document.querySelector("span[data-a-target='chat-input-text']").querySelector('span').innerText = user_chat;
-    } catch (_) { }
+      waitForOne([
+        "button[data-a-target='hide-chat-button']",
+        "button[data-a-target='switch-chat-settings-mode']"
+      ]).then(({ el, sel }) => {
+        el.click();
+        if (sel.includes("switch-chat")) {
+          waitFor("button[data-a-target='hide-chat-button']").then(b => b.click()).catch(() => { });
+        }
+        waitFor("button[data-a-target='show-chat-button']").then(b => b.click()).catch(() => { });
+      }).catch(() => { });
+    } catch { }
   }
-
 
   /**********************
    * HANDLE ERROR CODES *
@@ -196,6 +234,12 @@ function handler() {
   if (document.querySelector(".consent-banner__content--gdpr-v2")) {
     document.querySelector(".consent-banner__content--gdpr-v2").querySelectorAll("button")[2].click();
   }
+
+  /***************************
+   * AUTO CLICK BONUS BUTTON *
+  ***************************/
+
+  document.querySelector("button[aria-label='Claim Bonus']")?.click();
 
   /****************************
    * ADD FONT SELECT DROPDOWN *
@@ -228,15 +272,15 @@ function fontSelectListener() {
   });
 }
 
-/*********************
- * ِDISABLE K BUTTON *
- *********************/
+/********************************
+ * DISABLE K BUTTON FOR PAUSING *
+********************************/
 
 document.addEventListener('keydown', function (e) {
   const tag = document.activeElement.tagName.toLowerCase();
   const isTyping = tag === 'input' || tag === 'textarea' || document.activeElement.isContentEditable;
 
-  if (!isTyping && e.key.toLowerCase() === 'k') {
+  if (!isTyping && e.code === 'KeyK') {
     e.stopPropagation();
     e.preventDefault();
   }

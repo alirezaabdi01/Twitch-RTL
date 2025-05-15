@@ -1,7 +1,7 @@
 {
   "name": "Twitch RTL",
   "description": "Right To Left Support For Twitch.tv!",
-  "version": "1.3",
+  "version": "1.4.1",
   "homepage_url": "https://github.com/alirezaabdi01",
   "manifest_version": 3,
   "content_scripts": [
@@ -11,15 +11,10 @@
         "*://m.twitch.tv/*",
         "*://dashboard.twitch.tv/*"
       ],
-      "run_at": "document_idle",
       "js": [
         "content.js"
       ]
     }
-  ],
-  "host_permissions": [
-    "*://www.twitch.tv/*",
-    "*://m.twitch.tv/*"
   ],
   "action": {
     "default_popup": "popup.html",
