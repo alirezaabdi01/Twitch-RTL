@@ -15,6 +15,7 @@ Twitch RTL is a browser extension designed to enhance the viewing experience on 
 
 - 🧭 [Edge](https://microsoftedge.microsoft.com/addons/detail/twitch-rtl/jpmknenijonkbmkiodefkofihahalmna) Out Now!
 - 🦊 [Firefox](https://addons.mozilla.org/en-US/firefox/addon/twitch-rtl/) Out Now!
+- 🦊 [Firefox Android](https://addons.mozilla.org/en-US/android/addon/twitch-rtl-for-android/) Out Now!
 - 🟡 [Chrome](https://github.com/alirezaabdi01) Coming Soon..
 
 ![My Screenshot](GitHub_Images/Banner.png)
