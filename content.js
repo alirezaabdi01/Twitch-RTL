@@ -3,8 +3,7 @@
  *                                                                THIS SOFTWARE IS PROPRIETARY.                                                                *
  * SOURCE CODE IS MADE AVAILABLE FOR TRANSPARENCY ONLY. YOU MAY NOT COPY, MODIFY, REDISTRIBUTE, OR CREATE DERIVATIVE WORKS WITHOUT EXPRESS WRITTEN PERMISSION. *
  *                                                                    ALL RIGHTS RESERVED.                                                                     *
-***************************************************************************************************************************************************************/
-
+ ***************************************************************************************************************************************************************/
 
 if (!document.head.querySelector(".TwitchRTL")) {
   const style = document.createElement("style");
@@ -91,7 +90,8 @@ select.innerHTML = `
 const arabic = /[\u0600-\u06FF]/;
 var currentFont = "Vazirmatn";
 var globalFontSelectValue = "Vazirmatn";
-globalFontSelectValue = localStorage.getItem('selectedFont') || globalFontSelectValue;
+globalFontSelectValue =
+  localStorage.getItem("selectedFont") || globalFontSelectValue;
 
 function handleMessages() {
   const chat = document.querySelector("div[aria-label='Chat messages']");
@@ -99,21 +99,25 @@ function handleMessages() {
 
   /***************************
    * UPDATE TWITCH CHAT FONT *
-  ***************************/
+   ***************************/
 
-  if (globalFontSelectValue !== currentFont && (currentFont = globalFontSelectValue)) {
-
-    localStorage.setItem('selectedFont', currentFont);
-    const el = document.querySelector('.font-select');
-    el && (currentFont === "Twitch" ? el.style.removeProperty("font-family") : el.style.fontFamily = currentFont);
-    const sheet = document.querySelector('.TwitchRTL')?.sheet;
+  if (
+    globalFontSelectValue !== currentFont &&
+    (currentFont = globalFontSelectValue)
+  ) {
+    localStorage.setItem("selectedFont", currentFont);
+    const el = document.querySelector(".font-select");
+    el &&
+      (currentFont === "Twitch"
+        ? el.style.removeProperty("font-family")
+        : (el.style.fontFamily = currentFont));
+    const sheet = document.querySelector(".TwitchRTL")?.sheet;
     if (sheet) {
-      const targets = ['.chat-room__content', '.gBAboc', '.fPmwxk'];
+      const targets = [".chat-room__content", ".gBAboc", ".fPmwxk"];
       for (var rule of sheet.cssRules) {
         if (targets.includes(rule.selectorText)) {
           rule.style.removeProperty("font-family");
-          if (currentFont != "Twitch")
-            rule.style.fontFamily = currentFont;
+          if (currentFont != "Twitch") rule.style.fontFamily = currentFont;
         }
       }
     }
@@ -121,23 +125,29 @@ function handleMessages() {
 
   /*********************************************
    * REMOVE THE BUUGGED CHAT HORIZENTAL SCROLL *
-  *********************************************/
+   *********************************************/
 
   const container = chat.querySelector(".simplebar-content");
   if (container) container.style.overflowX = "hidden";
 
   /*****************************************
    * REMOVE CHAT-WELCOME-MESSAGE ONLY TEXT *
-  *****************************************/
+   *****************************************/
 
-  document.querySelectorAll('[data-a-target="chat-welcome-message"]').forEach(div => div.innerHTML = "");
-  document.querySelectorAll('[data-a-target="chat-welcome-message"]').forEach(div => div.innerText = "");
+  document
+    .querySelectorAll('[data-a-target="chat-welcome-message"]')
+    .forEach((div) => (div.innerHTML = ""));
+  document
+    .querySelectorAll('[data-a-target="chat-welcome-message"]')
+    .forEach((div) => (div.innerText = ""));
 
   /**********************************************
    * ALGORITHM OF MAKING THE CHAT RIGHT TO LEFT *
-  **********************************************/
+   **********************************************/
 
-  const messages = chat.querySelectorAll("div[data-a-target='chat-line-message']");
+  const messages = chat.querySelectorAll(
+    "div[data-a-target='chat-line-message']"
+  );
   for (let i = messages.length - 1; i >= 0; i--) {
     const msg = messages[i];
 
@@ -146,15 +156,21 @@ function handleMessages() {
 
     const emojiSpan = m.querySelector("span[aria-hidden='true']");
     if (emojiSpan) {
-      const scrollAtEnd = !chat.querySelector("div[class*='chat-paused-footer']");
+      const scrollAtEnd = !chat.querySelector(
+        "div[class*='chat-paused-footer']"
+      );
       emojiSpan.replaceWith(document.createElement("br"));
 
       if (scrollAtEnd) {
-        const scroll = chat.querySelector("div[data-a-target='chat-scroller'] .simplebar-scroll-content");
+        const scroll = chat.querySelector(
+          "div[data-a-target='chat-scroller'] .simplebar-scroll-content"
+        );
         if (scroll) scroll.scrollTo(0, scroll.scrollHeight);
       }
 
-      const body = m.querySelector("span[data-a-target='chat-line-message-body']");
+      const body = m.querySelector(
+        "span[data-a-target='chat-line-message-body']"
+      );
       if (body && arabic.test(body.textContent)) {
         const wrapper = document.createElement("div");
         wrapper.className = "rtlsupport";
@@ -167,13 +183,14 @@ function handleMessages() {
 
 function waitForOne(selectors, t = 10000) {
   return new Promise((res, rej) => {
-    const s = Date.now(), i = setInterval(() => {
-      for (const sel of selectors) {
-        const el = document.querySelector(sel);
-        if (el) return clearInterval(i), res({ el, sel });
-      }
-      if (Date.now() - s > t) clearInterval(i), rej();
-    }, 100);
+    const s = Date.now(),
+      i = setInterval(() => {
+        for (const sel of selectors) {
+          const el = document.querySelector(sel);
+          if (el) return clearInterval(i), res({ el, sel });
+        }
+        if (Date.now() - s > t) clearInterval(i), rej();
+      }, 100);
   });
 }
 
@@ -196,34 +213,46 @@ const observerCallback = (mutationsList, observer) => {
 const observer = new MutationObserver(observerCallback);
 observer.observe(document.body, {
   childList: true,
-  subtree: true
+  subtree: true,
 });
 
-function handler() {
+var chatPage = false;
+var cookiesOptOut = false;
 
+function handler() {
   /*********************************
    * FIX CHAT WELCOME MESSAGE SPAM *
-  *********************************/
+   *********************************/
 
-  if (document.querySelectorAll('[data-a-target="chat-welcome-message"]').length > 1) {
+  if (
+    document.querySelectorAll('[data-a-target="chat-welcome-message"]').length >
+      1 &&
+    ChatPage == false
+  ) {
     try {
       document.querySelector("button[data-a-target='chat-settings']").click();
       waitForOne([
         "button[data-a-target='hide-chat-button']",
-        "button[data-a-target='switch-chat-settings-mode']"
-      ]).then(({ el, sel }) => {
-        el.click();
-        if (sel.includes("switch-chat")) {
-          waitFor("button[data-a-target='hide-chat-button']").then(b => b.click()).catch(() => { });
-        }
-        waitFor("button[data-a-target='show-chat-button']").then(b => b.click()).catch(() => { });
-      }).catch(() => { });
-    } catch { }
+        "button[data-a-target='switch-chat-settings-mode']",
+      ])
+        .then(({ el, sel }) => {
+          el.click();
+          if (sel.includes("switch-chat")) {
+            waitFor("button[data-a-target='hide-chat-button']")
+              .then((b) => b.click())
+              .catch(() => {chatPage = true});
+          }
+          waitFor("button[data-a-target='show-chat-button']")
+            .then((b) => b.click())
+            .catch(() => {});
+        })
+        .catch(() => {chatPage = true});
+    } catch {}
   }
 
   /**********************
    * HANDLE ERROR CODES *
-  **********************/
+   **********************/
 
   const errorBox = document.querySelector(
     "div[aria-labelledby='content-overlay-gate-text']"
@@ -231,8 +260,35 @@ function handler() {
   if (errorBox && /#\d000/.test(errorBox.innerText))
     errorBox.querySelector("button")?.click();
 
-  if (document.querySelector(".consent-banner__content--gdpr-v2")) {
-    document.querySelector(".consent-banner__content--gdpr-v2").querySelectorAll("button")[2].click();
+  /******************
+   * REJECT COOKIES *
+  ******************/
+
+  if (!cookiesOptOut) {
+    if (document.querySelector(".consent-banner__content--gdpr-v2")) {
+      document
+        .querySelector(".consent-banner__content--gdpr-v2")
+        .querySelectorAll("button")[2]
+        ?.click();
+      cookiesOptOut = true;
+    }
+
+    waitFor("button[data-a-target='consent-banner-manage-preferences']")
+      .then((b) => {
+        b.click();
+        waitFor("input[aria-label='Opt out of targeted advertising']")
+          .then((b) => {
+            b.checked = true;
+            waitFor("button[data-a-target='consent-modal-save']")
+              .then((b) => {
+                b.click();
+                cookiesOptOut = true;
+              })
+              .catch(() => (cookiesOptOut = true));
+          })
+          .catch(() => (cookiesOptOut = true));
+      })
+      .catch(() => (cookiesOptOut = true));
   }
 
   /***************************
@@ -245,7 +301,9 @@ function handler() {
    * ADD FONT SELECT DROPDOWN *
   ****************************/
 
-  const inputButtonContainer = document.querySelector(".chat-input__buttons-container");
+  const inputButtonContainer = document.querySelector(
+    ".chat-input__buttons-container"
+  );
   if (inputButtonContainer && !document.querySelector(".font-select")) {
     inputButtonContainer.children[1].children[0].append(select);
     document.querySelector(".font-select").value = globalFontSelectValue;
@@ -274,14 +332,21 @@ function fontSelectListener() {
 
 /********************************
  * DISABLE K BUTTON FOR PAUSING *
-********************************/
+ ********************************/
 
-document.addEventListener('keydown', function (e) {
-  const tag = document.activeElement.tagName.toLowerCase();
-  const isTyping = tag === 'input' || tag === 'textarea' || document.activeElement.isContentEditable;
+document.addEventListener(
+  "keydown",
+  function (e) {
+    const tag = document.activeElement.tagName.toLowerCase();
+    const isTyping =
+      tag === "input" ||
+      tag === "textarea" ||
+      document.activeElement.isContentEditable;
 
-  if (!isTyping && e.code === 'KeyK') {
-    e.stopPropagation();
-    e.preventDefault();
-  }
-}, true);
+    if (!isTyping && e.code === "KeyK") {
+      e.stopPropagation();
+      e.preventDefault();
+    }
+  },
+  true
+);
