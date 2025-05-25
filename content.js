@@ -93,6 +93,9 @@ var globalFontSelectValue = "Vazirmatn";
 globalFontSelectValue =
   localStorage.getItem("selectedFont") || globalFontSelectValue;
 
+var cookiesOptOut = false;
+var chatPage = false;
+
 function handleMessages() {
   const chat = document.querySelector("div[aria-label='Chat messages']");
   if (!chat) return;
@@ -134,12 +137,33 @@ function handleMessages() {
    * REMOVE CHAT-WELCOME-MESSAGE ONLY TEXT *
    *****************************************/
 
-  document
-    .querySelectorAll('[data-a-target="chat-welcome-message"]')
-    .forEach((div) => (div.innerHTML = ""));
-  document
-    .querySelectorAll('[data-a-target="chat-welcome-message"]')
-    .forEach((div) => (div.innerText = ""));
+  const welcomeMessages = document.querySelectorAll(
+    '[data-a-target="chat-welcome-message"]'
+  );
+
+  if (chatPage) {
+    // Filter out only messages that are not the one we want to replace
+    const validMessages = Array.from(welcomeMessages).filter(
+      (div) =>
+        div.innerHTML !==
+        "Twitch RTL: You Got Reconnected! Refresh to make sure you didn't miss any chat!"
+    );
+
+    // If any valid message found, change the last one
+    if (validMessages.length > 0) {
+      const lastMessage = validMessages[validMessages.length - 1];
+      lastMessage.innerText =
+        "Twitch RTL: You Got Reconnected! Refresh to make sure you didn't miss any chat!";
+
+      // Clear all other messages if needed
+      validMessages.slice(0, -1).forEach((div) => (div.innerText = ""));
+    }
+  } else {
+    // If not on chatPage, clear all welcome messages
+    welcomeMessages.forEach((div) => {
+      if (div.innerText !== "") div.innerText = "";
+    });
+  }
 
   /**********************************************
    * ALGORITHM OF MAKING THE CHAT RIGHT TO LEFT *
@@ -181,7 +205,7 @@ function handleMessages() {
   }
 }
 
-function waitForOne(selectors, t = 10000) {
+function waitForOne(selectors, t = 2000) {
   return new Promise((res, rej) => {
     const s = Date.now(),
       i = setInterval(() => {
@@ -194,7 +218,7 @@ function waitForOne(selectors, t = 10000) {
   });
 }
 
-function waitFor(sel, t = 3000) {
+function waitFor(sel, t = 2000) {
   return new Promise((res, rej) => {
     const i = setInterval(() => {
       const el = document.querySelector(sel);
@@ -216,9 +240,6 @@ observer.observe(document.body, {
   subtree: true,
 });
 
-var chatPage = false;
-var cookiesOptOut = false;
-
 function handler() {
   /*********************************
    * FIX CHAT WELCOME MESSAGE SPAM *
@@ -227,7 +248,7 @@ function handler() {
   if (
     document.querySelectorAll('[data-a-target="chat-welcome-message"]').length >
       1 &&
-    ChatPage == false
+    chatPage == false
   ) {
     try {
       document.querySelector("button[data-a-target='chat-settings']").click();
@@ -240,14 +261,38 @@ function handler() {
           if (sel.includes("switch-chat")) {
             waitFor("button[data-a-target='hide-chat-button']")
               .then((b) => b.click())
-              .catch(() => {chatPage = true});
+              .catch(() => {
+                chatPage = true;
+                try {
+                  document
+                    .querySelector(
+                      "button[data-test-selector='chat-settings-close-button-selector']"
+                    )
+                    ?.click();
+                } catch {}
+              });
           }
           waitFor("button[data-a-target='show-chat-button']")
             .then((b) => b.click())
             .catch(() => {});
         })
-        .catch(() => {chatPage = true});
+        .catch(() => {
+          chatPage = true;
+          try {
+            document
+              .querySelector(
+                "button[data-test-selector='chat-settings-close-button-selector']"
+              )
+              ?.click();
+          } catch {}
+        });
     } catch {}
+  } else if (
+    document.querySelectorAll('[data-a-target="chat-welcome-message"]')
+      .length == 1 &&
+    chatPage == true
+  ) {
+    chatPage = false;
   }
 
   /**********************
@@ -262,7 +307,7 @@ function handler() {
 
   /******************
    * REJECT COOKIES *
-  ******************/
+   ******************/
 
   if (!cookiesOptOut) {
     if (document.querySelector(".consent-banner__content--gdpr-v2")) {
@@ -293,13 +338,13 @@ function handler() {
 
   /***************************
    * AUTO CLICK BONUS BUTTON *
-  ***************************/
+   ***************************/
 
   document.querySelector("button[aria-label='Claim Bonus']")?.click();
 
   /****************************
    * ADD FONT SELECT DROPDOWN *
-  ****************************/
+   ****************************/
 
   const inputButtonContainer = document.querySelector(
     ".chat-input__buttons-container"
