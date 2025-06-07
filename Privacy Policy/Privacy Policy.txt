@@ -1,0 +1,13 @@
+📜 Twitch RTL Privacy Policy
+Effective Date: April 14, 2025
+Your privacy is important to us. This browser extension, Twitch RTL, is designed to enhance the viewing experience on twitch.tv by providing right-to-left (RTL) language support in chat. We do not collect, store, or transmit any personal data.
+🔒 What We Collect
+We do not collect:
+Personal information, Browsing history, Twitch login data, Chat messages or user input
+🛠️ What the Extension Does
+Applies RTL styling and font changes to chat messages for better Persian/Arabic readability.
+Runs only on twitch.tv and does not interact with any other websites.
+📡 Permissions
+The extension requires access to sites in the twitch.tv domain to apply visual modifications on that site only. No data is sent anywhere.
+💼 Third-Party Services
+We use a Google Font (Vazirmatn) and other more fonts for better RTL appearance. This is loaded from fonts.googleapis.com, which may be subject to Google’s own privacy policies.
