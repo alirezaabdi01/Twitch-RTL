@@ -66,7 +66,9 @@ if (!document.head.querySelector(".TwitchRTL")) {
       background-color: #333;
       color: white;
     }
-   
+    .dtoOxd {
+      width: 100%;
+    }
     `;
   document.head.append(style);
 }
@@ -241,6 +243,7 @@ observer.observe(document.body, {
 });
 
 function handler() {
+
   /*********************************
    * FIX CHAT WELCOME MESSAGE SPAM *
    *********************************/
